@@ -17,6 +17,14 @@ import { isValidEmail, isValidPassword } from '../handlings/validation';
 const Register = (props) => {
     //state for keyboard on off
     const [keyboardIsShow, setkeyboardIsShow] = useState(false);
+    useEffect(() => {
+        Keyboard.addListener('keyboardDidShow', () => {
+            setkeyboardIsShow(true)
+        })
+        Keyboard.addListener('keyboardDidHide', () => {
+            setkeyboardIsShow(false)  
+        })
+    })
     //state for validation
     const [errorEmail, setErrorEmail] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
@@ -29,14 +37,7 @@ const Register = (props) => {
         isValidEmail(email) == true &&
         isValidPassword(password) == true
     
-    useEffect(() => {
-        Keyboard.addListener('keyboardDidShow', () => {
-            setkeyboardIsShow(true)
-        })
-        Keyboard.addListener('keyboardDidHide', () => {
-            setkeyboardIsShow(false)  
-        })
-    })
+    
     return (
         <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

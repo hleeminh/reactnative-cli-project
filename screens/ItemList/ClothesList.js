@@ -22,11 +22,21 @@ import RowList from './RowList';
 
 
 const ClothesList = (props) => {
+    const [keyboardShow, setkeyboardShow] = useState(false);
+    useEffect(() => {
+        Keyboard.addListener('keyboardDidShow', () => {
+            setkeyboardShow(true)
+        })
+        Keyboard.addListener('keyboardDidHide', () => {
+            setkeyboardShow(false)  
+        })
+    })
+
     const [clothes, setClothes] = useState([
         {
             id: 1,
             url: 'https://cdn2.yame.vn/pimg/ao-khoac-hoodie-zipper-than-co-ai-athena-ver1-0021591/a6c4598e-eac4-ac00-cff8-0019d0c114e3.jpg',
-            name: 'Áo khoác nam',
+            name: 'Áo hoodies',
             price: 250000,
             status: 'Còn hàng',
             heart: 4.1
@@ -167,7 +177,7 @@ const ClothesList = (props) => {
             }}
         >
             <View style={{ flex: 1 }}>
-                <View style={{ height: 60 }}>
+                <View style={{height: 60}}>
                     <Header
                         onSearch={(text) => {
                             setResults(text)
@@ -180,7 +190,7 @@ const ClothesList = (props) => {
 
                 }}></View>
                 {/* RowList */}
-                <View style={{ height: 100 }}>
+                <View style={{height: 100}}>
                     <FlatList
                         horizontal={true}
                         data={categories}
@@ -197,7 +207,7 @@ const ClothesList = (props) => {
                         keyExtractor={category => category.id}
                     />
                 </View>
-                <View style={{ flex: 9, backgroundColor: '#e5e5e5' }}>
+                <View style={{ flex: 1, backgroundColor: '#e5e5e5' }}>
                     {/* <ScrollView>
                         {clothes.map((clothe, index) => {
                             return (
@@ -246,9 +256,9 @@ const ClothesList = (props) => {
                     }
 
                 </View>
-                <View style={{ flex: 1, height: 60 }}>
+                {keyboardShow == false && <View style={{height: 75 }}>
                     <Footer />
-                </View>
+                </View>}
             </View>
         </KeyboardAvoidingView>
     )
