@@ -13,7 +13,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import { icons, images, colors } from '../../const';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { isValidEmail, isValidPassword } from '../../handlings/validation';
+
 
 // const _getColorFromStatus = (status) => {
 //     if(status.toLowerCase().trim() == 'còn hàng'){

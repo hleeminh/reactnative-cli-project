@@ -14,11 +14,10 @@ import {
 import React, { useState, useEffect } from 'react';
 import { icons, images, colors } from '../../const';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { isValidEmail, isValidPassword } from '../../handlings/validation';
 import Header from './Header';
+import RowList from './RowList';
 import ClothesUnit from './ClothesUnit';
 import Footer from './Footer';
-import RowList from './RowList';
 
 
 const ClothesList = (props) => {

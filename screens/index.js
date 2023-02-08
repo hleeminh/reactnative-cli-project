@@ -5,6 +5,7 @@ import ClothesList from "./ItemList/ClothesList";
 import Header from "./ItemList/Header";
 import Footer from "./ItemList/Footer";
 import RowList from "./ItemList/RowList";
+import ProductList from "./ProductGridList/ProductList";
 
 export {
     Welcome,
@@ -13,5 +14,6 @@ export {
     ClothesList,
     Header,
     Footer,
-    RowList
+    RowList,
+    ProductList
 }
