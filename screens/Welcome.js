@@ -10,10 +10,45 @@ import React, {useState, useEffect} from 'react';
 import {icons, images, colors} from '../const';
 import { UIButton } from '../components';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {
+    auth, 
+    firebaseDatabase, 
+    createUserWithEmailAndPassword,
+    firebaseDatabaseRef,
+    firebaseSet,
+    onAuthStateChanged,
+    sendEmailVerification
+} 
+from '../firebase/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Welcome = (props) => {
+    const {navigation, route} = props //props của Welcome
+    const {navigate, goBack} = navigation // function của navigation
+
     const names = ['Influencer', 'Business', 'Individual'];
     const [accountType, setAccoutType] = useState('');
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (resUser) => {
+            if(resUser) {
+                //sign in
+                let user = {
+                    userId: resUser.uid,
+                    email: resUser.email,
+                    emailVerified: resUser.emailVerified,
+                    accessToken: resUser.accessToken,
+                }
+                firebaseSet(firebaseDatabaseRef(
+                    firebaseDatabase,
+                    `users/${resUser.uid}`
+                ), user);
+                AsyncStorage.setItem('user', JSON.stringify(user))
+                navigate('UITab')
+            }
+        })
+    })
     return (
         <View style={{
             flex: 1,
@@ -95,7 +130,13 @@ const Welcome = (props) => {
                     flex: 2,
                     // backgroundColor: 'purple'
                 }}>
-                    <UIButton titleButton = 'Login'/>
+                    <UIButton 
+                        onPress={() => {
+                            navigate('Login')
+                        }}
+                        titleButton = 'Login'
+                    
+                    />
                     <Text style={{
                         color: 'white',
                         fontSize: 16,
@@ -107,7 +148,7 @@ const Welcome = (props) => {
                             marginTop: 6,
                         }}
                         onPress = {() => {
-                            alert('press register')
+                            navigate('Register')
                         }}
                     >
                         <Text style={{

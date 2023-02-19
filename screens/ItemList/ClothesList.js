@@ -14,20 +14,20 @@ import {
 import React, { useState, useEffect } from 'react';
 import { icons, images, colors } from '../../const';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Header from './Header';
-import RowList from './RowList';
 import ClothesUnit from './ClothesUnit';
-import Footer from './Footer';
+import { Header, Footer, RowList } from '../index';
 
 
 const ClothesList = (props) => {
+    const { navigation, route } = props //props của Login
+    const { navigate, goBack } = navigation // function của navigation
     const [keyboardShow, setkeyboardShow] = useState(false);
     useEffect(() => {
         Keyboard.addListener('keyboardDidShow', () => {
             setkeyboardShow(true)
         })
         Keyboard.addListener('keyboardDidHide', () => {
-            setkeyboardShow(false)  
+            setkeyboardShow(false)
         })
     })
 
@@ -175,39 +175,34 @@ const ClothesList = (props) => {
                 flex: 1,
             }}
         >
-            <View style={{ flex: 1 }}>
-                <View style={{height: 60}}>
-                    <Header
-                        onSearch={(text) => {
-                            setResults(text)
-                        }}
-                    />
-                </View>
-                <View style={{
-                    height: 2,
-                    backgroundColor: '#dfe3ec'
 
-                }}></View>
-                {/* RowList */}
-                <View style={{height: 100}}>
-                    <FlatList
-                        horizontal={true}
-                        data={categories}
-                        renderItem={({ item }) => {
-                            return (
-                                <RowList
-                                    onPressCategory={() => {
-                                        alert(`${item.id}.${item.name}`)
-                                    }}
-                                    categoryprop={item}
-                                />
-                            )
-                        }}
-                        keyExtractor={category => category.id}
-                    />
-                </View>
-                <View style={{ flex: 1, backgroundColor: '#e5e5e5' }}>
-                    {/* <ScrollView>
+            <View style={{ height: 60 }}>
+                <Header
+                    onSearch={(text) => {
+                        setResults(text)
+                    }}
+                />
+            </View>
+            {/* RowList */}
+            <View style={{ height: 100 }}>
+                <FlatList
+                    horizontal={true}
+                    data={categories}
+                    renderItem={({ item }) => {
+                        return (
+                            <RowList
+                                onPressCategory={() => {
+                                    alert(`${item.id}.${item.name}`)
+                                }}
+                                categoryprop={item}
+                            />
+                        )
+                    }}
+                    keyExtractor={category => category.id}
+                />
+            </View>
+            <View style={{ flex: 1, backgroundColor: '#e5e5e5' }}>
+                {/* <ScrollView>
                         {clothes.map((clothe, index) => {
                             return (
                                 <ClothesUnit
@@ -220,45 +215,57 @@ const ClothesList = (props) => {
                             )
                         })}
                     </ScrollView> */}
-                    {
-                        filteredClothe().length > 0 ?
-                            <FlatList
-                                style={{
-                                    flex: 1,
-                                }}
-                                data={filteredClothe()}
-                                renderItem={({ item }) => {
-                                    return (
-                                        <ClothesUnit
-                                            onPressClothe={() => {
-                                                alert(`${item.id}.${item.name}`)
-                                            }}
-                                            clotheprop={item}
-                                        />
-                                    )
-                                }}
-                                keyExtractor={clothe => clothe.id}
-                            /> :
-                            <View style={{
+                {
+                    filteredClothe().length > 0 ?
+                        <FlatList
+                            style={{
                                 flex: 1,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                // backgroundColor: 'red'
-                            }}>
-                                <Text style={{
-                                    color: 'black',
-                                    fontSize: 22,
-                                    fontWeight: '700'
+                            }}
+                            data={filteredClothe()}
+                            renderItem={({ item }) => {
+                                return (
+                                    <ClothesUnit
+                                        onPressClothe={() => {
+                                            alert(`${item.id}.${item.name}`)
+                                        }}
+                                        clotheprop={item}
+                                    />
+                                )
+                            }}
+                            keyExtractor={clothe => clothe.id}
+                        /> :
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            // backgroundColor: 'red'
+                        }}>
+                            <Text style={{
+                                color: 'black',
+                                fontSize: 22,
+                                fontWeight: '700'
 
-                                }}>Xin lỗi, hiện tại không có mặt hàng này</Text>
-                            </View>
-                    }
+                            }}>Xin lỗi, hiện tại không có mặt hàng này</Text>
+                        </View>
+                }
 
-                </View>
-                {keyboardShow == false && <View style={{height: 75 }}>
-                    <Footer />
-                </View>}
             </View>
+            {/* {keyboardShow == false && <View style={{ height: 75 }}>
+                <Footer
+                    onPressHome={() => {
+                        navigate('Welcome')
+                    }}
+                    onPressList={() => {
+                        navigate('ClothesList')
+                    }}
+                    onPressGridList={() => {
+                        navigate('ProductList')
+                    }}
+                    onPressSetting={() => {
+                        navigate('Setting')
+                    }}
+                />
+            </View>} */}
         </KeyboardAvoidingView>
     )
 }

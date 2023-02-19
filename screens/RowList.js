@@ -11,9 +11,8 @@ import {
     ScrollView
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { icons, images, colors } from '../../const';
+import { icons, images, colors } from '../const';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { isValidEmail, isValidPassword } from '../../handlings/validation';
 
 const RowList = (props) => {
     let {id, name, url} = props.categoryprop;

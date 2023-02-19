@@ -13,8 +13,22 @@ import React, {useState, useEffect} from 'react';
 import {icons, images, colors} from '../const';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { isValidEmail, isValidPassword } from '../handlings/validation';
+import {
+    auth, 
+    firebaseDatabase, 
+    createUserWithEmailAndPassword,
+    firebaseDatabaseRef,
+    firebaseSet,
+    onAuthStateChanged,
+    sendEmailVerification,
+    signInWithEmailAndPassword
+} 
+from '../firebase/firebase';
+
 
 const Login = (props) => {
+    const {navigation, route} = props //props của Login
+    const {navigate, goBack} = navigation // function của navigation
     //state for keyboard on off
     const [keyboardIsShow, setkeyboardIsShow] = useState(false);
     //state for validation
@@ -37,35 +51,64 @@ const Login = (props) => {
             setkeyboardIsShow(false)  
         })
     })
+
+    // useEffect(() => {
+    //     onAuthStateChanged(auth, (user) => {
+    //         if(user) {
+    //             //sign in
+    //             const userId = user.uid;
+    //             firebaseSet(firebaseDatabaseRef(
+    //                 firebaseDatabase,
+    //                 `users/${userId}`
+    //             ), {
+    //                 email: user.email,
+    //                 emailVerified: user.emailVerified,
+    //                 accessToken: user.accessToken,
+    //             });
+    //             navigate('UITab')
+    //         }
+    //     })
+    // })
     return (
         <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{
                 flex: 1
             }}>
-            <View style={{
-                flex: 3,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginHorizontal: 40,
-            }}>
-                <Text style={{
+            <TouchableOpacity
+                onPress={() => {
+                    navigate('Welcome')
+                }}
+                style={{
+                    flex: 3,
+                    height: 300
+                }}
+            >
+                <View style={{
                     flex: 1,
-                    fontSize: 28,
-                    fontWeight: 'bold',
-                    // marginLeft: 20
-                }}>React Native OK dang cap</Text>
-                <Image 
-                    source={icons.iconRn}
-                    style={{
-                        // tintColor: 'white',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginHorizontal: 40,
+                    height: 300
+                }}>
+                    <Text style={{
                         flex: 1,
-                        height: 150,
-                        width: 150,
-                    }}
-                />
-            </View>
+                        fontSize: 28,
+                        fontWeight: 'bold',
+                        // marginLeft: 20
+                    }}>Shop T1 Con</Text>
+                    <Image 
+                        source={icons.iconRn}
+                        style={{
+                            // tintColor: 'white',
+                            flex: 1,
+                            height: 150,
+                            width: 150,
+                        }}
+                    />
+                </View>
+            </TouchableOpacity>
             <View style={{
                 flex: 5,
                 // backgroundColor: 'yellow'
@@ -145,7 +188,14 @@ const Login = (props) => {
                     <TouchableOpacity
                         disabled = {isValidationOK() == false}
                         onPress={() => {
-                            alert(`Email = ${email} and password = ${password}`)
+                            signInWithEmailAndPassword(auth, email, password)
+                            .then((userCredential) => {
+                                const user = userCredential.user                                
+                                navigate('UITab')
+                            })
+                            .catch((error) => {
+                                alert(`Cannot signin, error: ${error.message}`)
+                            })
                         }}
                         style={{
                             backgroundColor: isValidationOK() == true ? colors.primaryColor1 : 'grey',
@@ -165,18 +215,32 @@ const Login = (props) => {
                             }}
                         >Login</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{marginBottom: 6}}>
-                        <Text style={{
-                            color: colors.primaryColor1,
-                            fontSize: 16
-                        }}>New user? Register now</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Text style={{
-                            color: colors.primaryColor1,
-                            fontSize: 16
-                        }}>Forget password?</Text>
-                    </TouchableOpacity>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            marginTop: 10
+                        }}
+                    >
+                        <TouchableOpacity 
+                            onPress={() => {
+                                navigate('Register')
+                            }} 
+                        >
+                            <Text style={{
+                                color: colors.primaryColor1,
+                                fontSize: 16,
+                                fontWeight: '500'
+                            }}>Register now</Text>
+                        </TouchableOpacity>
+                        <View style={{flex: 0.5}}/>
+                        <TouchableOpacity>
+                            <Text style={{
+                                color: colors.primaryColor1,
+                                fontSize: 16
+                            }}>Forget password?</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
 

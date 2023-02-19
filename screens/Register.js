@@ -13,8 +13,20 @@ import React, {useState, useEffect} from 'react';
 import {icons, images, colors} from '../const';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { isValidEmail, isValidPassword } from '../handlings/validation';
+import {
+    auth, 
+    firebaseDatabase, 
+    createUserWithEmailAndPassword,
+    firebaseDatabaseRef,
+    firebaseSet,
+    onAuthStateChanged,
+    sendEmailVerification
+} 
+from '../firebase/firebase'
 
 const Register = (props) => {
+    const {navigation, route} = props //props của Login
+    const {navigate, goBack} = navigation // function của navigation
     //state for keyboard on off
     const [keyboardIsShow, setkeyboardIsShow] = useState(false);
     useEffect(() => {
@@ -31,11 +43,14 @@ const Register = (props) => {
     //state to store Email && password
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [repassword, setRePassword] = useState('');
+
     const isValidationOK = () => 
         email.length > 0 &&
         password.length > 0 &&
         isValidEmail(email) == true &&
-        isValidPassword(password) == true
+        isValidPassword(password) == true &&
+        password == repassword
     
     
     return (
@@ -45,19 +60,29 @@ const Register = (props) => {
                 flex: 1,
                 backgroundColor: colors.primaryColor1
             }}>
+            <TouchableOpacity
+                onPress={() => {
+                    navigate('Welcome')
+                }}
+                style={{
+                    flex: 1.5, 
+                    height: 180    
+                }}
+            >
             <View style={{
-                flex: 1.5,
+                flex: 1,
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginHorizontal: 40,
+                height: 180
             }}>
                 <Text style={{
                     flex: 1,
                     fontSize: 28,
                     fontWeight: 'bold',
                     color: 'white'
-                }}>React Native Register 123</Text>
+                }}>Shop T1 Con</Text>
                 <Image 
                     source={icons.iconRn}
                     style={{
@@ -68,6 +93,7 @@ const Register = (props) => {
                     }}
                 />
             </View>
+            </TouchableOpacity>
             <View style={{
                 flex: 5,
                 backgroundColor: 'white',
@@ -92,6 +118,7 @@ const Register = (props) => {
                         setErrorEmail(isValidEmail(text) == true ? '' 
                         : `Email không dược để trống và phải đúng định ${'\n'}dạng theo yêu cầu`)
                         setEmail(text)
+                        
                     }} 
                     style={{
                         width: '80%',
@@ -154,7 +181,7 @@ const Register = (props) => {
                     onChangeText={(text) => {
                         setErrorPassword(isValidPassword(text) == true ? '' 
                         : `Mật khẩu không dược để trống và phải có nhiều ${'\n'}hơn 3 ký tự`)
-                        setPassword(text)
+                        setRePassword(text)
                     }}
                     style={{
                         width: '80%',
@@ -182,7 +209,26 @@ const Register = (props) => {
                     <TouchableOpacity
                         disabled = {isValidationOK() == false}
                         onPress={() => {
-                            alert(`Email = ${email} and password = ${password}`)
+                            // alert(`Email = ${email} and password = ${password}`)
+                            createUserWithEmailAndPassword(auth, email, password)
+                            .then((userCredential) => {
+                                const user = userCredential.user
+                                sendEmailVerification(user).then(() => {
+                                    alert('A verification link has been sent to your email.')
+                                })
+                                // firebaseSet(firebaseDatabaseRef(
+                                //     firebaseDatabase,
+                                //     `users/${user.uid}`
+                                // ), {
+                                //     email: user.email,
+                                //     emailVerified: user.emailVerified,
+                                //     accessToken: user.accessToken
+                                // })
+                                navigate('Login')
+                            })
+                            .catch((error) => {
+                                alert(`Cannot signin, error: ${error.message}`)
+                            })
                         }}
                         style={{
                             backgroundColor: isValidationOK() == true ? colors.primaryColor1 : 'grey',
@@ -202,18 +248,19 @@ const Register = (props) => {
                             }}
                         >Register</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{marginBottom: 6}}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigate('Login')
+                        }}
+                        style={{marginTop: 10}}
+                    >
                         <Text style={{
                             color: colors.primaryColor1,
-                            fontSize: 16
-                        }}>New user? Register now</Text>
+                            fontSize: 18,
+                            fontWeight: '500'
+                        }}>Already have an account? Login now!</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Text style={{
-                            color: colors.primaryColor1,
-                            fontSize: 16
-                        }}>Forget password?</Text>
-                    </TouchableOpacity>
+
                 </View>
             </View>
 

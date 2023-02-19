@@ -15,8 +15,8 @@ import { icons, images, colors } from '../../const';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const Header = (props) => {
-    const {onSearch , length} = props;
-    const [results, setResults] = useState('');
+    
+    const {onSearch} = props;
     return (
         <View
             style={{
